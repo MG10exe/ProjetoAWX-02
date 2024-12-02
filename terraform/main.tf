@@ -21,8 +21,8 @@ data "google_secret_manager_secret_version" "chave_publica" {
   project = var.gcp_project
 }
 
-resource "google_compute_instance" "maquina_teste" {
-  name = "maquina-teste"
+resource "google_compute_instance" "maquina_teste_02" {
+  name = "maquina-teste-02"
   machine_type = var.instance_type["medium"]
   zone = "us-central1-c"
 
