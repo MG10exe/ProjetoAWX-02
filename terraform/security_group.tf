@@ -1,5 +1,5 @@
-resource "google_compute_firewall" "acesso_geral" {
-  name        = "acesso-geral"
+resource "google_compute_firewall" "acesso_geral_02" {
+  name        = "acesso-geral-02"
   network = "default"
 
   allow {
