@@ -13,7 +13,7 @@ terraform {
 provider "google" {
   credentials = var.gcp_credentials_path
   project = var.gcp_project
-  region = "us-east-1"
+  region = "us-central-1"
 }
 
 data "google_secret_manager_secret_version" "chave_publica" {
