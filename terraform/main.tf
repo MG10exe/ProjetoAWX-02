@@ -17,7 +17,7 @@ provider "google" {
 }
 
 data "google_secret_manager_secret_version" "chave_publica" {
-  secret  = "chave-publica-awxServer"
+  secret  = "chave-publica-servidor-awx"
   project = var.gcp_project
 }
 
@@ -27,7 +27,7 @@ resource "google_compute_instance" "maquina_teste_02" {
   zone = "us-central1-c"
 
   metadata = {
-    ssh-keys = "matheusgandrade:${data.google_secret_manager_secret_version.chave_publica.secret_data}"
+    ssh-keys = "root:${data.google_secret_manager_secret_version.chave_publica.secret_data}"
     }
 
   boot_disk {
