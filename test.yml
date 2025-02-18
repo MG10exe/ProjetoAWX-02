@@ -1,0 +1,15 @@
+---
+- name: Deploy resources via Terraform
+  hosts: localhost
+  tasks:
+
+    - name: Carregar o arquivo do Terraform Plan
+      cloud.terraform.plan_stash:
+        path: /tmp/tfplan
+        state: load
+      no_log: true
+
+    - name: Aplicar o Terraform Plan salvo
+      command: terraform apply -no-color -input=false -auto-approve -lock=true /tmp/tfplan
+      args:
+        chdir: terraform/
