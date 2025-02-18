@@ -13,6 +13,7 @@
           gcp_credentials_path: "{{ lookup('env', 'GCE_CREDENTIALS_FILE_PATH') }}"
           gcp_project: "{{ lookup('env', 'GCE_PROJECT') }}"
         plan_file: /tmp/tfplan
+      register: terraform_plan_output
 
     - name: Stash Terraform plan file
       cloud.terraform.plan_stash:
