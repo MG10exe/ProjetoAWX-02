@@ -9,14 +9,20 @@
         mode: '0755'
 
     - name: Initialize Terraform
-      command: terraform init
+      command: terraform init -backend-config="{{ lookup('env', 'TF_BACKEND_CONFIG_FILE') }}"
       args:
         chdir: terraform/
+      environment:
+        GOOGLE_APPLICATION_CREDENTIALS: "{{ lookup('env', 'GCE_CREDENTIALS_FILE_PATH') }}"
+        GCP_PROJECT: "{{ lookup('env', 'GCE_PROJECT') }}"
 
     - name: Run Terraform plan
       command: terraform plan -out=tfplan
       args:
         chdir: terraform/
+      environment:
+        GOOGLE_APPLICATION_CREDENTIALS: "{{ lookup('env', 'GCE_CREDENTIALS_FILE_PATH') }}"
+        GCP_PROJECT: "{{ lookup('env', 'GCE_PROJECT') }}"
 
     - name: Encode Terraform plan file into variable
       cloud.terraform.plan_stash:
@@ -36,3 +42,6 @@
       command: terraform apply tfplan
       args:
         chdir: terraform/
+      environment:
+        GOOGLE_APPLICATION_CREDENTIALS: "{{ lookup('env', 'GCE_CREDENTIALS_FILE_PATH') }}"
+        GCP_PROJECT: "{{ lookup('env', 'GCE_PROJECT') }}"
