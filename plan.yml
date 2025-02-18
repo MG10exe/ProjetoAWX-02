@@ -12,3 +12,4 @@
         variables:
           gcp_credentials_path: "{{ lookup('env', 'GCE_CREDENTIALS_FILE_PATH') }}"
           gcp_project: "{{ lookup('env', 'GCE_PROJECT') }}"
+        plan_file: "terraform/tfplan"
