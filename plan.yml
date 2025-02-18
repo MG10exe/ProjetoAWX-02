@@ -1,47 +1,21 @@
 ---
-- name: Terraform workflow
+- name: Plan Terraform execution
   hosts: localhost
   tasks:
-    - name: Ensure Terraform directory exists
-      file:
-        path: terraform/
-        state: directory
-        mode: '0755'
-
-    - name: Initialize Terraform
-      command: terraform init -backend-config="{{ lookup('env', 'TF_BACKEND_CONFIG_FILE') }}"
-      args:
-        chdir: terraform/
-      environment:
-        GOOGLE_APPLICATION_CREDENTIALS: "{{ lookup('env', 'GCE_CREDENTIALS_FILE_PATH') }}"
-        GCP_PROJECT: "{{ lookup('env', 'GCE_PROJECT') }}"
-
     - name: Run Terraform plan
-      command: terraform plan -out=tfplan
-      args:
-        chdir: terraform/
-      environment:
-        GOOGLE_APPLICATION_CREDENTIALS: "{{ lookup('env', 'GCE_CREDENTIALS_FILE_PATH') }}"
-        GCP_PROJECT: "{{ lookup('env', 'GCE_PROJECT') }}"
+      cloud.terraform.terraform:
+        project_path: terraform/
+        state: planned
+        force_init: true
+        backend_config_files:
+          - "{{ lookup('env', 'TF_BACKEND_CONFIG_FILE') }}"
+        variables:
+          gcp_credentials_path: "{{ lookup('env', 'GCE_CREDENTIALS_FILE_PATH') }}"
+          gcp_project: "{{ lookup('env', 'GCE_PROJECT') }}"
+        plan_file: /tmp/tfplan
 
-    - name: Encode Terraform plan file into variable
+    - name: Stash Terraform plan file
       cloud.terraform.plan_stash:
-        path: terraform/tfplan
-        var_name: terraform_plan
+        path: /tmp/tfplan
         state: stash
       no_log: true
-
-    - name: Load Terraform plan from variable
-      cloud.terraform.plan_stash:
-        path: terraform/tfplan
-        var_name: terraform_plan
-        state: load
-      no_log: true
-
-    - name: Apply Terraform plan
-      command: terraform apply tfplan
-      args:
-        chdir: terraform/
-      environment:
-        GOOGLE_APPLICATION_CREDENTIALS: "{{ lookup('env', 'GCE_CREDENTIALS_FILE_PATH') }}"
-        GCP_PROJECT: "{{ lookup('env', 'GCE_PROJECT') }}"
